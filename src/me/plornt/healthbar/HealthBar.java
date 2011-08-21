@@ -28,6 +28,7 @@ public class HealthBar extends JavaPlugin {
 		Player pl = (Player) sender;
 		SpoutPlayer sp = (SpoutPlayer) pl;
 		if (commandLabel.equalsIgnoreCase("ch")) {
+			//Inputting Example Code From wiki to test...
 			pl.sendMessage(ChatColor.GREEN + "Attempting to create dialog");
 			GenericPopup somepopup = new GenericPopup();
 			GenericLabel label = new GenericLabel("This is a label");
