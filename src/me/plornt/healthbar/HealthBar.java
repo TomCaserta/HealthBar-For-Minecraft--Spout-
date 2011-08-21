@@ -1,33 +1,40 @@
 package me.plornt.healthbar;
 
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.getspout.spoutapi.SpoutManager;
+import org.getspout.spoutapi.gui.GenericLabel;
+import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.player.AppearanceManager;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class HealthBar extends JavaPlugin {
 	public static HealthBar plugin;
 	public static Server server;
 	private final HealthBarEntityListener el = new HealthBarEntityListener(this);
 	private final HealthBarPlayerListener pl = new HealthBarPlayerListener(this);
-	public final HashMap<Player, Boolean> smokeUser = new HashMap<Player, Boolean>();
 	public final Logger logger = Logger.getLogger("Minecraft");
-	public boolean isSmokeEnabled (Player pl) {
-		return smokeUser.containsKey(pl);
-	}
-	public boolean toggleSmoke (Player pl) {
-		Boolean b = isSmokeEnabled(pl);
-		if (b) smokeUser.remove(pl);
-		else smokeUser.put(pl, true);
-		return b;
+	public boolean onCommand (CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		Player pl = (Player) sender;
+		SpoutPlayer sp = (SpoutPlayer) pl;
+		if (commandLabel.equalsIgnoreCase("ch")) {
+			pl.sendMessage(ChatColor.GREEN + "Attempting to create dialog");
+			GenericPopup somepopup = new GenericPopup();
+			GenericLabel label = new GenericLabel("This is a label");
+			somepopup.attachWidget(label); 
+			sp.getMainScreen().attachPopupScreen(somepopup);
+			pl.sendMessage(ChatColor.GREEN + "Attempted to create dialog");
+		}
+		return false;
 	}
 	public void setTitle (Player pl, int health, int tothealth, String rpt) {
 		String gh;
@@ -52,6 +59,6 @@ public class HealthBar extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.pl, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.el, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.el, Event.Priority.Normal, this);
-		this.logger.info("[HealthBar] Loaded up plugin... Version 1.");		
+		this.logger.info("[HealthBar] Loaded up plugin... Version 2.");		
 	}
 }

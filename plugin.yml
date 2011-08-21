@@ -1,6 +1,9 @@
 name: HealthBar
 main: me.plornt.healthbar.HealthBar
-version: 0.1
+version: 0.2
 author: Plornt
 description: Adds a healthbar to SpoutClients.
 commands:
+  ch:
+    description: Opens the CheckHealth dialog.
+    usage: ch
