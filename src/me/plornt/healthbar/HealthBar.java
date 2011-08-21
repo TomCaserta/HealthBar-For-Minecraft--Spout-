@@ -1,7 +1,7 @@
 package me.plornt.healthbar;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -18,6 +18,7 @@ import org.getspout.spoutapi.player.AppearanceManager;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class HealthBar extends JavaPlugin {
+	public static HashMap<Player, String> hn = new HashMap<Player, String>();
 	public static HealthBar plugin;
 	public static Server server;
 	private final HealthBarEntityListener el = new HealthBarEntityListener(this);
@@ -37,15 +38,19 @@ public class HealthBar extends JavaPlugin {
 		return false;
 	}
 	public void setTitle (Player pl, int health, int tothealth, String rpt) {
+		AppearanceManager sm =  SpoutManager.getAppearanceManager();
 		String gh;
 		if (health != 0) gh = new String(new char[health]).replace("\0", rpt);
 		else gh = "";
 		String bh;
 		if (health != 20) bh = new String(new char[(tothealth - health)]).replace("\0", rpt);
 		else bh = "";
-		String n = pl.getName();
-		AppearanceManager sm =  SpoutManager.getAppearanceManager();
-		sm.setGlobalTitle((LivingEntity) pl,n + "\n" + ChatColor.BLUE + " [" + ChatColor.GREEN + gh + ChatColor.RED + bh + ChatColor.BLUE + "]");
+		 String prevName;
+		if (hn.get(pl) instanceof String) prevName = (String) sm.getTitle((SpoutPlayer) pl, (LivingEntity) pl).replace(hn.get(pl),"");
+		else prevName = (String) sm.getTitle((SpoutPlayer) pl, (LivingEntity) pl);
+		hn.remove(pl);
+		hn.put(pl, "\n"+ ChatColor.BLUE + " [" + ChatColor.GREEN + gh + ChatColor.RED + bh + ChatColor.BLUE + "]");
+		sm.setGlobalTitle((LivingEntity) pl,prevName + hn.get(pl));
 	}
 	@Override
 	public void onDisable () {
@@ -59,6 +64,6 @@ public class HealthBar extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.pl, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.el, Event.Priority.Normal, this);
 		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.el, Event.Priority.Normal, this);
-		this.logger.info("[HealthBar] Loaded up plugin... Version 2.");		
+		this.logger.info("[HealthBar] Loaded up plugin... Version 0.2.");		
 	}
 }
