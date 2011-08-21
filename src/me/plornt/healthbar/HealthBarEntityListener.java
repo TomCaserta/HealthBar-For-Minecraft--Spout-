@@ -16,14 +16,14 @@ public class HealthBarEntityListener extends EntityListener {
 	Entity pl = ev.getEntity();
 		if (pl instanceof Player) {
 			int h = ((Player) pl).getHealth() - ev.getDamage();
-			plugin.setTitle((Player) pl, h, 20, "|");
+			plugin.setTitle((Player) pl, h, 20, 0);
 		}
 	}
 	public void onEntityRegainHealth (EntityRegainHealthEvent ev) {
 	Entity pl = ev.getEntity();
 		if (pl instanceof Player) {
 			int h = ((Player) pl).getHealth() + ev.getAmount();
-		plugin.setTitle((Player) pl, h, 20, "|");
+		plugin.setTitle((Player) pl, h, 20, 0);
 		}
 		
 	}

@@ -14,9 +14,9 @@ public class HealthBarPlayerListener extends PlayerListener {
 	public void onPlayerJoin (PlayerJoinEvent ev) {
 		Player pl = ev.getPlayer();
 		int h = pl.getHealth();
-		plugin.setTitle(pl,h,20,"|");
+		plugin.setTitle(pl,h,20,0);
 	}
 	public void onPlayerRespawn (PlayerRespawnEvent ev) {
-		plugin.setTitle(ev.getPlayer(),20,20,"|");
+		plugin.setTitle(ev.getPlayer(),20,20,1);
 	}
 }
