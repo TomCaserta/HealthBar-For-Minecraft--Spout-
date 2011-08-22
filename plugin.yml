@@ -1,5 +1,23 @@
 name: HealthBar
 main: me.plornt.healthbar.HealthBar
-version: 0.3
+version: 0.4
 author: Plornt
 description: Adds a healthbar to SpoutClients.
+commands:
+  healthbar:
+    description: Provides functions to reload the config.
+    usage: healthbar <reload>
+
+permissions:
+  healthbar:
+    description: HealthBar permissions
+    type: map
+    map:
+      cansee:
+        description: Whether a player can see the health bar.
+        type: boolean
+        default: false
+      reload:
+        description: Whether or not they may reload the configuration
+        type: boolean
+        default: false
