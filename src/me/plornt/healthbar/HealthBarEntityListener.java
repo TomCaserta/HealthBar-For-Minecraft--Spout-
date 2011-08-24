@@ -1,30 +1,26 @@
 package me.plornt.healthbar;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityListener;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
 
-public class HealthBarEntityListener extends EntityListener {
+public class HealthBarEntityListener implements Runnable {
 	public static HealthBar plugin;
 	public HealthBarEntityListener (HealthBar instance) {
 		plugin = instance;
 		
 	}
-	public void onEntityDamage (EntityDamageEvent ev) {
-	Entity pl = ev.getEntity();
-		if (pl instanceof Player) {
-			int h = ((Player) pl).getHealth() - ev.getDamage();
-			plugin.setTitle((Player) pl, h, 20, 0);
+	@Override
+	public void run() {
+		for (int x = 0; x < plugin.getServer().getOnlinePlayers().length; x++) {
+			Player pl = plugin.getServer().getOnlinePlayers()[x];
+			 if (!HealthBar.hn.isEmpty()) {
+				 if (HealthBar.hn.containsKey(pl)) {
+					 if (HealthBar.hn.get(pl) != pl.getHealth()) {
+						 plugin.setTitle(pl,pl.getHealth(),20,1);
+					 }
+				 }
+				 else HealthBar.hn.put(pl, pl.getHealth());
+			 }
+			 else HealthBar.hn.put(pl, pl.getHealth());
 		}
-	}
-	public void onEntityRegainHealth (EntityRegainHealthEvent ev) {
-	Entity pl = ev.getEntity();
-		if (pl instanceof Player) {
-			int h = ((Player) pl).getHealth() + ev.getAmount();
-		plugin.setTitle((Player) pl, h, 20, 0);
-		}
-		
 	}
 }

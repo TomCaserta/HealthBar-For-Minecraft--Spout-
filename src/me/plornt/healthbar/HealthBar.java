@@ -18,13 +18,12 @@ import org.getspout.spoutapi.player.AppearanceManager;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class HealthBar extends JavaPlugin {
-	public static HashMap<Player, String> hn = new HashMap<Player, String>();
+	public static HashMap<Player, Integer> hn = new HashMap<Player, Integer>();
 	public static HealthBar plugin;
 	public static Configuration config;
 	public static Server server;
 	public String goodHealthColor, hurtHealthColor, containerColor, container1, container2, barCharacter;
 	public Boolean usePermissions;
-	private final HealthBarEntityListener el = new HealthBarEntityListener(this);
 	private final HealthBarPlayerListener pl = new HealthBarPlayerListener(this);
 	public final Logger logger = Logger.getLogger("Minecraft");
 	public boolean onCommand (CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -42,25 +41,27 @@ public class HealthBar extends JavaPlugin {
 	}
 	public void setTitle (Player pl, int health, int tothealth, int death) {
 		AppearanceManager sm =  SpoutManager.getAppearanceManager();
-		String gh;
-		if (health > 0 && health <= 20) {
-			gh = new String(new char[health]).replace("\0", barCharacter);
+		if (health >= 0 && health <= tothealth) {
 			String bh;
+			String gh;
+			if (health > 0) gh = new String(new char[health]).replace("\0", barCharacter);
+			else gh = "";
 			if (health < tothealth) bh = new String(new char[(tothealth - health)]).replace("\0", barCharacter);
 			else bh = "";
-			 String prevName;		 
-			if (hn.get(pl) instanceof String) prevName = (String) sm.getTitle((SpoutPlayer) pl, (LivingEntity) pl).replace(hn.get(pl),"");
-			else prevName = (String) sm.getTitle((SpoutPlayer) pl, (LivingEntity) pl);
-			hn.remove(pl);
-			hn.put(pl, "\n"+ "§" + containerColor + container1 +"§" + goodHealthColor + gh +"§" + hurtHealthColor + bh +"§" + containerColor + container2);
+			String hb = "§e§c§e\n"+ "§" + containerColor + container1 +"§" + goodHealthColor + gh +"§" + hurtHealthColor + bh +"§" + containerColor + container2;
 			if (usePermissions) {
 				for (Player player : getServer().getOnlinePlayers()) { 
 					if (player.hasPermission("healthbar.cansee")) {
-						sm.setPlayerTitle((SpoutPlayer) player, (LivingEntity) pl,prevName + hn.get(pl));
+						if (player instanceof SpoutPlayer) {
+							String[] plName = sm.getTitle((SpoutPlayer) pl, (LivingEntity) player).split("§e§c§e");
+							if (plName[0] != null) {
+								sm.setPlayerTitle((SpoutPlayer) player, (LivingEntity) pl,plName[0] + hb);
+							}
+						}
 					}
 				}
 			}
-			else sm.setGlobalTitle((LivingEntity) pl,prevName + hn.get(pl));
+			else sm.setGlobalTitle((LivingEntity) pl,hb);
 		}
 	}
 	@Override
@@ -117,8 +118,8 @@ public class HealthBar extends JavaPlugin {
 		PluginManager pm = server.getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_JOIN, this.pl, Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.pl, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.ENTITY_DAMAGE, this.el, Event.Priority.Monitor, this);
-		pm.registerEvent(Event.Type.ENTITY_REGAIN_HEALTH, this.el, Event.Priority.Monitor, this);
-		this.logger.info("[HealthBar] Loaded up plugin... Version 0.3.");		
+		pm.registerEvent(Event.Type.PLAYER_QUIT, this.pl, Event.Priority.Monitor, this);
+		getServer().getScheduler().scheduleSyncRepeatingTask(this, new HealthBarEntityListener (this),0,1);
+		this.logger.info("[HealthBar] Loaded up plugin... Version 0.6.");		
 	}
 }
