@@ -1,12 +1,12 @@
 name: HealthBar
 main: me.plornt.healthbar.HealthBar
-version: 0.6
+version: 0.7
 author: Plornt
 description: Adds a healthbar to SpoutClients.
 commands:
   healthbar:
     description: Provides functions to reload the config.
-    usage: healthbar <reload>
+    usage: healthbar
 
 permissions:
   healthbar:

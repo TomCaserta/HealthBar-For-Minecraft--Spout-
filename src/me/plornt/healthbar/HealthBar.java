@@ -61,7 +61,10 @@ public class HealthBar extends JavaPlugin {
 					}
 				}
 			}
-			else sm.setGlobalTitle((LivingEntity) pl,hb);
+			else {
+				String[] plName = sm.getTitle((SpoutPlayer) pl, (LivingEntity) pl).split("§e§c§e");				
+				sm.setGlobalTitle((LivingEntity) pl,plName[0] + hb);
+			}
 		}
 	}
 	@Override
@@ -120,6 +123,6 @@ public class HealthBar extends JavaPlugin {
 		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.pl, Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, this.pl, Event.Priority.Monitor, this);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new HealthBarEntityListener (this),0,1);
-		this.logger.info("[HealthBar] Loaded up plugin... Version 0.6.");		
+		this.logger.info("[HealthBar] Loaded up plugin... Version 0.7.");		
 	}
 }
