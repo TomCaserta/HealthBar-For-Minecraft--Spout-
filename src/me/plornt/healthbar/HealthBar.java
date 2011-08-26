@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
@@ -22,9 +23,10 @@ public class HealthBar extends JavaPlugin {
 	public static HealthBar plugin;
 	public static Configuration config;
 	public static Server server;
-	public String goodHealthColor, hurtHealthColor, containerColor, container1, container2, barCharacter;
-	public Boolean usePermissions;
+	public static String goodHealthColor, hurtHealthColor, containerColor, container1, container2, barCharacter;
+	public static Boolean usePermissions = false, useHeroes = false;
 	private final HealthBarPlayerListener pl = new HealthBarPlayerListener(this);
+	private final HealthBarPluginListener pe = new HealthBarPluginListener(this);
 	public final Logger logger = Logger.getLogger("Minecraft");
 	public boolean onCommand (CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		Player pl = (Player) sender;
@@ -110,7 +112,16 @@ public class HealthBar extends JavaPlugin {
 	   barCharacter = (String) config.getProperty("Colors.barCharacter");
 	   if (barCharacter == null) barCharacter = "|";
 	   if (((String) config.getProperty("Permissions.usePermissions")).equalsIgnoreCase("true")) usePermissions = true;
-	   else usePermissions = false;
+	   
+	}
+	//Not sure if its possible but if heroes loads before my plugin is loaded im fairly sure the on plugin enable wont go...
+	public void checkHeroes () {
+		//testing for Heroes without importing it! :D
+		Plugin pla = HealthBar.plugin.getServer().getPluginManager().getPlugin("Heroes");
+		if (pla != null) {
+			useHeroes = true;
+			new HealthBarHeroes(pla);
+		}
 	}
 	@Override
 	public void onEnable () {
@@ -120,9 +131,10 @@ public class HealthBar extends JavaPlugin {
 		loadConfig();
 		PluginManager pm = server.getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_JOIN, this.pl, Event.Priority.Monitor, this);
+		pm.registerEvent(Event.Type.PLUGIN_ENABLE, this.pe, Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_RESPAWN, this.pl, Event.Priority.Monitor, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, this.pl, Event.Priority.Monitor, this);
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new HealthBarEntityListener (this),0,1);
-		this.logger.info("[HealthBar] Loaded up plugin... Version 0.7.");		
+		this.logger.info("[HealthBar] Loaded up plugin... Version 0.8.");		
 	}
 }
