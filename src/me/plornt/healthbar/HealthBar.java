@@ -33,7 +33,7 @@ public class HealthBar extends JavaPlugin {
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
         // will do something with later..
         if (sender instanceof ConsoleCommandSender || sender.isOp() && !usePermissions || sender.hasPermission("healthbar.reload") && usePermissions) {
-            if (commandLabel.equalsIgnoreCase("HealthBar") && args[0].equalsIgnoreCase("reload")) {
+            if (commandLabel.equalsIgnoreCase("HealthBar") && args.length == 1 && args[0].equalsIgnoreCase("reload")) {
                 this.loadConfig();
                 sender.sendMessage("§c[HealthBar] §9Reloaded Configuration");
                 return true;
