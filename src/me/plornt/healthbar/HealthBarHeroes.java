@@ -6,8 +6,9 @@ import com.herocraftonline.dev.heroes.Heroes;
 import com.herocraftonline.dev.heroes.persistence.HeroManager;
 
 public class HealthBarHeroes {
-	static HeroManager pl;
-	HealthBarHeroes (Plugin hl) {
-		pl = (HeroManager) ((Heroes) hl).getHeroManager();
-	}
+    static HeroManager pl;
+
+    HealthBarHeroes(Plugin hl) {
+        pl = (HeroManager) ((Heroes) hl).getHeroManager();
+    }
 }
