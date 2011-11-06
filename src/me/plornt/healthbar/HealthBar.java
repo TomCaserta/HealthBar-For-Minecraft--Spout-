@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -29,13 +30,11 @@ public class HealthBar extends JavaPlugin {
 	private final HealthBarPluginListener pe = new HealthBarPluginListener(this);
 	public final Logger logger = Logger.getLogger("Minecraft");
 	public boolean onCommand (CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		Player pl = (Player) sender;
-		//SpoutPlayer sp = (SpoutPlayer) pl;
 		//will do something with later..
-		if ((pl.isOp() && !usePermissions) || (pl.hasPermission("healthbar.reload") && usePermissions)) {
+		if ((sender instanceof ConsoleCommandSender) || (sender.isOp() && !usePermissions) || (sender.hasPermission("healthbar.reload") && usePermissions)) {
 			if (commandLabel.equalsIgnoreCase("HealthBar") && args[0].equalsIgnoreCase("reload")) {
 				this.loadConfig();
-				pl.sendMessage("§c[HealthBar] §9Reloaded Configuration");
+				sender.sendMessage("§c[HealthBar] §9Reloaded Configuration");
 				return true;
 				}
 		}
@@ -63,7 +62,7 @@ public class HealthBar extends JavaPlugin {
 					}
 				}
 			}
-			else {
+			else if(pl instanceof SpoutPlayer) {
 				String[] plName = sm.getTitle((SpoutPlayer) pl, (LivingEntity) pl).split("§e§c§e");				
 				sm.setGlobalTitle((LivingEntity) pl,plName[0] + hb);
 			}
